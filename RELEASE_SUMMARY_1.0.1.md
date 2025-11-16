@@ -1,9 +1,9 @@
 # 🚀 PivotPHP Cycle ORM v1.0.1 - Release Summary
 
 ## 📋 Quick Overview
-**Release Date:** July 9, 2025  
-**Version:** 1.0.1  
-**Type:** Performance & Compatibility Update  
+**Release Date:** July 9, 2025
+**Version:** 1.0.1
+**Type:** Performance & Compatibility Update
 **Compatibility:** 100% Backward Compatible
 
 ## 🎯 Key Improvements
@@ -94,7 +94,6 @@ composer show pivotphp/cycle-orm
 
 - **GitHub**: https://github.com/PivotPHP/pivotphp-cycle-orm
 - **Packagist**: https://packagist.org/packages/pivotphp/cycle-orm
-- **Discord**: https://discord.gg/DMtxsP7z
 
 ---
 
