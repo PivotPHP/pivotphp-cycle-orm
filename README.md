@@ -4,7 +4,7 @@
 
 [![PHP Version](https://img.shields.io/badge/php-%3E%3D8.1-blue.svg)](https://www.php.net/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Latest Stable Version](https://img.shields.io/badge/version-1.0.0-brightgreen.svg)](https://github.com/PivotPHP/pivotphp-cycle-orm/releases)
+[![Latest Stable Version](https://img.shields.io/badge/version-1.0.1-brightgreen.svg)](https://github.com/PivotPHP/pivotphp-cycle-orm/releases)
 [![PHPStan](https://img.shields.io/badge/PHPStan-Level%209-success.svg)](https://phpstan.org/)
 [![Tests](https://img.shields.io/badge/tests-67%20passed-success.svg)](https://github.com/PivotPHP/pivotphp-cycle-orm/actions)
 
@@ -44,9 +44,10 @@ cd pivotphp-cycle-orm
 composer install
 ```
 
-The `composer.json` is configured to use the local path `../pivotphp-core` for development.
-
-**Note**: The CI/CD pipeline automatically adjusts the composer configuration to use the GitHub repository instead of the local path.
+**Note**: `composer.json` does not currently declare a local `repositories` path
+to a sibling `pivotphp-core` checkout — it resolves `pivotphp/core` from Packagist
+like any other dependency, both locally and in CI. If you need to develop against
+an unreleased `pivotphp-core` change, add a local path repository yourself.
 
 ## 🔧 Quick Start
 
@@ -54,10 +55,10 @@ The `composer.json` is configured to use the local path `../pivotphp-core` for d
 
 ```php
 use PivotPHP\Core\Core\Application;
-use PivotPHP\Core\CycleORM\CycleServiceProvider;
+use PivotPHP\CycleORM\CycleServiceProvider;
 
 $app = new Application();
-$app->register(new CycleServiceProvider());
+$app->register(new CycleServiceProvider($app));
 ```
 
 ### 2. Configure Database
@@ -150,11 +151,11 @@ class UserRepository extends Repository
 ### Transaction Middleware
 
 ```php
-use PivotPHP\Core\CycleORM\Middleware\TransactionMiddleware;
+use PivotPHP\CycleORM\Middleware\TransactionMiddleware;
 
 // Automatic transaction handling
 $app->post('/api/orders',
-    new TransactionMiddleware(),
+    new TransactionMiddleware($app),
     function (CycleRequest $request) {
         // All database operations are wrapped in a transaction
         $order = new Order();
@@ -174,7 +175,7 @@ $app->post('/api/orders',
 ### Query Monitoring
 
 ```php
-use PivotPHP\Core\CycleORM\Monitoring\QueryLogger;
+use PivotPHP\CycleORM\Monitoring\QueryLogger;
 
 // Enable query logging
 $logger = $app->get(QueryLogger::class);
@@ -192,7 +193,7 @@ $stats = $logger->getStatistics();
 ### Health Checks
 
 ```php
-use PivotPHP\Core\CycleORM\Health\CycleHealthCheck;
+use PivotPHP\CycleORM\Health\CycleHealthCheck;
 
 $app->get('/health', function () use ($app) {
     $health = $app->get(CycleHealthCheck::class);
@@ -209,22 +210,37 @@ $app->get('/health', function () use ($app) {
 
 ### Entity Validation Middleware
 
+`EntityValidationMiddleware` takes no constructor arguments and does not support
+Laravel-style rule strings (`'required|string|min:3'`). It wraps the request in a
+`CycleRequest` and exposes `validateEntity(object $entity): array{valid: bool, errors: array<int, string>}`,
+a basic reflection-based check (required non-nullable properties, `string`/`int` type
+mismatches) that you call yourself inside your handler:
+
 ```php
-use PivotPHP\Core\CycleORM\Middleware\EntityValidationMiddleware;
+use PivotPHP\CycleORM\Middleware\EntityValidationMiddleware;
+
+$validation = new EntityValidationMiddleware();
 
 $app->post('/users',
-    new EntityValidationMiddleware(User::class, [
-        'name' => 'required|string|min:3',
-        'email' => 'required|email|unique:users,email'
-    ]),
-    $handler
+    $validation,
+    function (CycleRequest $request, $res) use ($validation) {
+        $user = new User();
+        // ...populate $user from $request...
+
+        $result = $validation->validateEntity($user);
+        if (!$result['valid']) {
+            return $res->status(422)->json(['errors' => $result['errors']]);
+        }
+
+        // persist $user...
+    }
 );
 ```
 
 ### Performance Profiling
 
 ```php
-use PivotPHP\Core\CycleORM\Monitoring\PerformanceProfiler;
+use PivotPHP\CycleORM\Monitoring\PerformanceProfiler;
 
 $profiler = $app->get(PerformanceProfiler::class);
 $profiler->startProfiling();
@@ -241,19 +257,22 @@ $profile = $profiler->stopProfiling();
 
 ### Custom Commands
 
+This package does **not** ship a `bin/console` executable or a `vendor/bin/pivotphp`
+binary. `Commands\SchemaCommand`, `MigrateCommand`, `EntityCommand`, and `StatusCommand`
+are plain PHP classes with a `handle(): int` method — instantiate them yourself
+(typically from a small console script your own project provides):
+
 ```php
-// Create entity command
-php vendor/bin/pivotphp cycle:entity User
+use PivotPHP\CycleORM\Commands\{SchemaCommand, MigrateCommand, EntityCommand, StatusCommand};
 
-// Run migrations
-php vendor/bin/pivotphp cycle:migrate
-
-// Update schema
-php vendor/bin/pivotphp cycle:schema
-
-// Check database status
-php vendor/bin/pivotphp cycle:status
+(new EntityCommand(['name' => 'User'], $container))->handle();   // create entity
+(new MigrateCommand([], $container))->handle();                  // run migrations
+(new SchemaCommand(['--sync' => true], $container))->handle();   // sync schema
+(new StatusCommand([], $container))->handle();                   // check status
 ```
+
+See [Configurar Console](docs/integration-guide.md#-comandos-cli) for a complete
+example `bin/console` script that wires these into runnable CLI commands.
 
 ## 🧪 Testing
 

@@ -27,7 +27,7 @@ O coletor centraliza estatísticas como número de queries executadas, tempo tot
 
 ## Exemplo de Uso
 ```php
-use PivotPHP\Core\CycleORM\Monitoring\MetricsCollector;
+use PivotPHP\CycleORM\Monitoring\MetricsCollector;
 
 MetricsCollector::increment('entities_persisted');
 MetricsCollector::recordQueryTime('SELECT * FROM users', 120.5);

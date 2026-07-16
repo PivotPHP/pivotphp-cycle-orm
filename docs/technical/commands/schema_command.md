@@ -6,9 +6,11 @@ O comando `SchemaCommand` permite exibir e sincronizar o schema do Cycle ORM, ga
 Esse comando é fundamental para manter a integridade do schema, especialmente após alterações em entidades ou configurações do ORM.
 
 ## Exemplos de Uso
-```bash
-php bin/console cycle:schema
-php bin/console cycle:schema --sync
+Não há `bin/console` incluído no pacote — instancie a classe diretamente (veja
+[integration-guide.md](../../integration-guide.md#-comandos-cli) para um script completo):
+```php
+(new SchemaCommand([], $container))->handle();
+(new SchemaCommand(['--sync' => true], $container))->handle();
 ```
 
 ## Opções Disponíveis

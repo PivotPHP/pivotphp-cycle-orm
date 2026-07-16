@@ -59,7 +59,7 @@ var/
 Adicione os pacotes ao seu projeto:
 
 ```bash
-composer require pivotphp/core-cycle-orm-extension cycle/orm cycle/annotated cycle/migrations
+composer require pivotphp/cycle-orm cycle/orm cycle/annotated cycle/migrations
 ```
 
 ## 2. Configuração Básica
@@ -117,11 +117,13 @@ class User
 
 ## 4. Migration
 
-Gere e execute as migrations:
+Não há binário `vendor/bin/cycle` neste pacote. `SchemaCommand`/`MigrateCommand` são
+classes PHP simples — invoque-as a partir de um script `bin/console` próprio (veja
+[integration-guide.md](../integration-guide.md#-comandos-cli) para um exemplo completo):
 
-```bash
-vendor/bin/cycle schema
-vendor/bin/cycle migrate
+```php
+(new SchemaCommand([], $container))->handle();
+(new MigrateCommand([], $container))->handle();
 ```
 
 ## 5. Uso no Controller/Service
@@ -173,7 +175,7 @@ class UserRepository extends Repository
 ## 7. Health Check
 
 ```php
-use PivotPHP\Core\CycleORM\Health\CycleHealthCheck;
+use PivotPHP\CycleORM\Health\CycleHealthCheck;
 
 $result = CycleHealthCheck::check($app);
 if ($result['cycle_orm'] !== 'healthy') {
@@ -184,7 +186,7 @@ if ($result['cycle_orm'] !== 'healthy') {
 ## 8. Monitoramento e Métricas
 
 ```php
-use PivotPHP\Core\CycleORM\Monitoring\MetricsCollector;
+use PivotPHP\CycleORM\Monitoring\MetricsCollector;
 
 MetricsCollector::increment('entities_persisted');
 $metrics = MetricsCollector::getMetrics();
@@ -216,14 +218,14 @@ $app->run();
 ## Ciclo de Vida e Dicas de Debug
 
 - O provider registra `cycle.database`, `cycle.orm`, `cycle.em` no container PivotPHP.
-- Use `php artisan cycle schema` e `php artisan cycle migrate` para atualizar o banco.
+- Não há comando `artisan` neste pacote (convenção de outro framework). Instancie `SchemaCommand`/`MigrateCommand` diretamente para atualizar o banco.
 - Para debug, ative logs SQL no Cycle ORM ou use o `MetricsCollector` para monitorar queries.
 - Para resetar métricas em testes: `MetricsCollector::reset();`
 
 ## Troubleshooting
 
 - **Erro: Unable to resolve role**: Verifique se a entidade está registrada em `config/cycle.php` e se o caminho está correto.
-- **Erro de migration**: Certifique-se de rodar `vendor/bin/cycle schema` e `vendor/bin/cycle migrate` após criar/alterar entidades.
+- **Erro de migration**: Certifique-se de invocar `SchemaCommand`/`MigrateCommand` (via seu `bin/console`) após criar/alterar entidades.
 - **Problemas de autoload**: Rode `composer dump-autoload -o` após criar novas classes.
 - **Problemas com SQLite**: Verifique permissões da pasta `var/` e se o arquivo `db.sqlite` existe.
 - **Testes de integração**: Veja exemplos em `tests/Integration/FullIntegrationTest.php`.

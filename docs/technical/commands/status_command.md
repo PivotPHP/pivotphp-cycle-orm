@@ -6,8 +6,10 @@ O comando `StatusCommand` verifica o status de saúde do Cycle ORM e do banco de
 Esse comando executa uma série de verificações automáticas, como conexão com o banco, integridade do schema e performance, retornando um relatório detalhado.
 
 ## Exemplo de Uso
-```bash
-php bin/console cycle:status
+Não há `bin/console` incluído no pacote — instancie a classe diretamente. Requer que
+uma função global `app()` esteja disponível (usada internamente por `CycleHealthCheck`):
+```php
+(new StatusCommand([], $container))->handle();
 ```
 
 ## Métodos Principais

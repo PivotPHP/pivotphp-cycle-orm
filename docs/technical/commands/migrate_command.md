@@ -6,9 +6,10 @@ O comando `MigrateCommand` executa e reverte migrações do Cycle ORM, permitind
 Esse comando é essencial para gerenciar a evolução do banco de dados em ambientes de desenvolvimento, homologação e produção.
 
 ## Exemplos de Uso
-```bash
-php bin/console cycle:migrate
-php bin/console cycle:migrate --rollback
+Não há `bin/console` incluído no pacote — instancie a classe diretamente:
+```php
+(new MigrateCommand([], $container))->handle();
+(new MigrateCommand(['--rollback' => true], $container))->handle();
 ```
 
 ## Opções Disponíveis

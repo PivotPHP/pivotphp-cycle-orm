@@ -15,7 +15,7 @@ Este guia apresenta o uso da extensão desde o básico até implementações ava
 ### 1. Instalar via Composer
 
 ```bash
-composer require pivotphp/core-cycle-orm-extension
+composer require pivotphp/cycle-orm
 ```
 
 ### 2. Configurar Variáveis de Ambiente
@@ -67,7 +67,7 @@ Crie o arquivo `public/index.php`:
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use PivotPHP\Core\Core\Application;
-use PivotPHP\Core\CycleORM\CycleServiceProvider;
+use PivotPHP\CycleORM\CycleServiceProvider;
 
 // Criar aplicação PivotPHP
 $app = new Application();
@@ -1216,7 +1216,7 @@ return $container;
 ### 1. Middleware de Transação
 
 ```php
-use PivotPHP\Core\CycleORM\Middleware\TransactionMiddleware;
+use PivotPHP\CycleORM\Middleware\TransactionMiddleware;
 
 // Aplicar em todas as rotas
 $app->use(new TransactionMiddleware($app));
@@ -1230,18 +1230,15 @@ $app->post('/api/users', function ($req, $res) {
 
 ### 2. Migrations e Schema
 
-```bash
-# Sincronizar schema
-php bin/console cycle:schema:sync
+Não há `bin/console` incluído no pacote nem um comando para gerar arquivos de migration
+(`SchemaCommand`/`MigrateCommand`/`StatusCommand` não expõem isso). Invoque as classes
+diretamente a partir do seu próprio script `bin/console` (veja
+[integration-guide.md](integration-guide.md#-comandos-cli)):
 
-# Criar migration
-php bin/console cycle:migrate:create create_users_table
-
-# Executar migrations
-php bin/console cycle:migrate
-
-# Verificar status
-php bin/console cycle:status
+```php
+(new SchemaCommand(['--sync' => true], $container))->handle(); // sincronizar schema
+(new MigrateCommand([], $container))->handle();                // executar migrations
+(new StatusCommand([], $container))->handle();                 // verificar status
 ```
 
 ### 3. Debugging e Profiling
@@ -1254,7 +1251,7 @@ $_ENV['CYCLE_LOG_QUERIES'] = true;
 $_ENV['CYCLE_PROFILE_QUERIES'] = true;
 
 // Coletar métricas
-use PivotPHP\Core\CycleORM\Monitoring\MetricsCollector;
+use PivotPHP\CycleORM\Monitoring\MetricsCollector;
 
 $app->get('/metrics', function ($req, $res) {
     $metrics = MetricsCollector::getMetrics();
@@ -1265,7 +1262,7 @@ $app->get('/metrics', function ($req, $res) {
 ### 4. Health Check
 
 ```php
-use PivotPHP\Core\CycleORM\Health\HealthCheckMiddleware;
+use PivotPHP\CycleORM\Health\HealthCheckMiddleware;
 
 $app->get('/health', function ($req, $res) {
     return $res->json(['status' => 'ok']);

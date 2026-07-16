@@ -3,7 +3,7 @@
 ## Instalação e Configuração
 
 ```bash
-composer require pivotphp/core-cycle-orm-extension
+composer require pivotphp/cycle-orm
 ```
 
 ```php
@@ -11,10 +11,10 @@ composer require pivotphp/core-cycle-orm-extension
 chdir(dirname(__DIR__)); // IMPORTANTE!
 require 'vendor/autoload.php';
 
-use PivotPHP\Core\CycleORM\CycleServiceProvider;
-use PivotPHP\Core\CycleORM\Middleware\CycleMiddleware;
+use PivotPHP\CycleORM\CycleServiceProvider;
+use PivotPHP\CycleORM\Middleware\CycleMiddleware;
 
-$app = new PivotPHP\Core\Application();
+$app = new PivotPHP\Core\Core\Application();
 
 // Configurar banco
 $_ENV['DB_CONNECTION'] = 'sqlite';
@@ -50,7 +50,10 @@ $app->get('/exemplo', function ($req, $res) {
     // Métodos de conveniência
     $repo = $req->repository(User::class);
     $user = $req->entity(User::class, ['name' => 'João']);
-    $page = $req->paginate(User::class, 20, 1);
+    // paginate() takes a Cycle Select query, not a class-string — signature is
+    // paginate(Select $query, int $page = 1, int $perPage = 15)
+    $query = $req->repository(User::class)->select();
+    $page = $req->paginate($query, 1, 20);
 
     // Propriedades diretas
     $orm = $req->orm;
@@ -171,7 +174,7 @@ $_ENV['CYCLE_LOG_QUERIES'] = true;
 $_ENV['CYCLE_PROFILE_QUERIES'] = true;
 
 // Coletar métricas
-use PivotPHP\Core\CycleORM\Monitoring\MetricsCollector;
+use PivotPHP\CycleORM\Monitoring\MetricsCollector;
 
 $metrics = MetricsCollector::getMetrics();
 // ['queries' => 10, 'time' => 0.125, 'cache_hits' => 5]
@@ -179,15 +182,14 @@ $metrics = MetricsCollector::getMetrics();
 
 ## Comandos CLI
 
-```bash
-# Sincronizar schema
-php bin/console cycle:schema:sync
+Não há `bin/console` incluído no pacote. `SchemaCommand`, `MigrateCommand`, `StatusCommand`
+são classes PHP simples (`handle(): int`) — você as invoca a partir de um script `bin/console`
+próprio do seu projeto (veja o exemplo completo em [integration-guide.md](integration-guide.md#-comandos-cli)):
 
-# Status das migrações
-php bin/console cycle:status
-
-# Executar migrações
-php bin/console cycle:migrate
+```php
+(new SchemaCommand(['--sync' => true], $container))->handle(); // sincronizar schema
+(new StatusCommand([], $container))->handle();                 // status das migrações
+(new MigrateCommand([], $container))->handle();                // executar migrações
 ```
 
 ## Resolução de Problemas
@@ -225,8 +227,8 @@ $app->use(new CycleMiddleware($app)); // ✓
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 
-use PivotPHP\Core\CycleORM\CycleServiceProvider;
-use PivotPHP\Core\CycleORM\Middleware\CycleMiddleware;
+use PivotPHP\CycleORM\CycleServiceProvider;
+use PivotPHP\CycleORM\Middleware\CycleMiddleware;
 use PivotPHP\Core\Core\Application;
 
 $app = new Application();

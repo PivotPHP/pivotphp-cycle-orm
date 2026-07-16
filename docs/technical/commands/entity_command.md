@@ -6,8 +6,9 @@ O comando `EntityCommand` gera novas entidades para o Cycle ORM, padronizando a 
 Permite criar rapidamente classes de entidades seguindo as convenções do projeto, reduzindo erros e acelerando o desenvolvimento.
 
 ## Exemplo de Uso
-```bash
-php bin/console make:entity User
+Não há `bin/console` incluído no pacote — instancie a classe diretamente:
+```php
+(new EntityCommand(['name' => 'User'], $container))->handle();
 ```
 
 ## Métodos Principais

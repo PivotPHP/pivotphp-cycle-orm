@@ -15,7 +15,7 @@ Utilizada como superclasse para todas as exceptions do pacote, facilita o tratam
 
 ## Exemplo de Uso
 ```php
-use PivotPHP\Core\CycleORM\Exceptions\CycleORMException;
+use PivotPHP\CycleORM\Exceptions\CycleORMException;
 
 throw new CycleORMException('Erro ao conectar', 0, null, ['component' => 'database']);
 ```

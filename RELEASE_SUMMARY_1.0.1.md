@@ -61,7 +61,7 @@ scripts\test-coverage.ps1       # PowerShell
 ## 🧪 Quality Metrics
 
 - ✅ **67 tests passing** (100% success rate)
-- ✅ **PHPStan Level 8** (zero errors)
+- ✅ **PHPStan Level 9** (zero errors)
 - ✅ **PSR-12 compliant** (100% code style)
 - ✅ **Clean CI/CD** (exit code 0)
 

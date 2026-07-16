@@ -16,7 +16,7 @@ Este guia detalha como integrar corretamente a PivotPHP Cycle ORM Extension em s
 mkdir meu-projeto && cd meu-projeto
 
 # 2. Instalar dependências
-composer require pivotphp/core pivotphp/core-cycle-orm-extension
+composer require pivotphp/core pivotphp/cycle-orm
 
 # 3. Criar estrutura de diretórios
 mkdir -p public src/{Controllers,Entities,Repositories} database app/Entities bin
@@ -32,7 +32,7 @@ mkdir -p public src/{Controllers,Entities,Repositories} database app/Entities bi
 declare(strict_types=1);
 
 use PivotPHP\Core\Core\Application;
-use PivotPHP\Core\CycleORM\CycleServiceProvider;
+use PivotPHP\CycleORM\CycleServiceProvider;
 use Dotenv\Dotenv;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
@@ -139,7 +139,7 @@ CYCLE_PROFILE_QUERIES=true
     "require": {
         "php": "^8.1",
         "pivotphp/core": "^2.1.1",
-        "pivotphp/core-cycle-orm-extension": "^1.0.2",
+        "pivotphp/cycle-orm": "^1.0.2",
         "vlucas/phpdotenv": "^5.6"
     },
     "autoload": {
@@ -389,6 +389,11 @@ $app->run();
 
 ## 🔨 Comandos CLI
 
+Este pacote não inclui um binário `bin/console`/`vendor/bin/pivotphp` — `SchemaCommand`,
+`MigrateCommand`, `EntityCommand` e `StatusCommand` são classes PHP simples
+(`handle(): int`) que você instancia a partir de um script próprio. Abaixo, um exemplo
+completo desse script (é código que você cria no seu projeto, não algo que o pacote fornece):
+
 ### Configurar Console (bin/console)
 
 ```php
@@ -398,10 +403,10 @@ $app->run();
 declare(strict_types=1);
 
 use PivotPHP\Core\Core\Application;
-use PivotPHP\Core\CycleORM\CycleServiceProvider;
-use PivotPHP\Core\CycleORM\Commands\SchemaCommand;
-use PivotPHP\Core\CycleORM\Commands\MigrateCommand;
-use PivotPHP\Core\CycleORM\Commands\StatusCommand;
+use PivotPHP\CycleORM\CycleServiceProvider;
+use PivotPHP\CycleORM\Commands\SchemaCommand;
+use PivotPHP\CycleORM\Commands\MigrateCommand;
+use PivotPHP\CycleORM\Commands\StatusCommand;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -563,7 +568,7 @@ $app->register(new CycleServiceProvider($app));
 
 - [Documentação do PivotPHP](https://github.com/pivotphp/core)
 - [Documentação do Cycle ORM](https://cycle-orm.dev)
-- [Exemplos de código](https://github.com/pivotphp/core-cycle-orm-extension/tree/main/examples)
+- [Exemplos de código](https://github.com/pivotphp/cycle-orm/tree/main/examples)
 
 ## 🤝 Suporte
 
@@ -571,4 +576,4 @@ Se encontrar problemas:
 
 1. Verifique os logs em `storage/logs/`
 2. Ative o debug: `APP_DEBUG=true`
-3. Abra uma issue no [GitHub](https://github.com/pivotphp/core-cycle-orm-extension/issues)
+3. Abra uma issue no [GitHub](https://github.com/pivotphp/cycle-orm/issues)

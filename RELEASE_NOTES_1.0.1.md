@@ -132,7 +132,7 @@ Exit code: 0  ✅
 
 ### Code Quality
 - **100% PSR-12 compliant** with automatic fixes
-- **PHPStan Level 8** with zero errors
+- **PHPStan Level 9** with zero errors
 - **67 tests passing** with 242 assertions
 - **Clean codebase** with removed duplicates
 

@@ -17,7 +17,7 @@ Permite acessar ORM, EntityManager, Database, usuário autenticado e informaçõ
 
 ## Exemplo de Uso
 ```php
-use PivotPHP\Core\CycleORM\Http\CycleRequest;
+use PivotPHP\CycleORM\Http\CycleRequest;
 
 function handle(CycleRequest $request) {
     $user = $request->user;

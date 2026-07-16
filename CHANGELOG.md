@@ -57,7 +57,7 @@ This release focuses on performance optimizations, cross-platform compatibility,
 - **Compatibility**: Maintains full backward compatibility with existing APIs
 - **Dependencies**: Updated to PivotPHP Core v1.1.0 from Packagist
 - **Testing**: 67 tests passing with 242 assertions
-- **Static Analysis**: PHPStan Level 8 compliance maintained
+- **Static Analysis**: PHPStan Level 9 compliance maintained
 - **Code Style**: 100% PSR-12 compliant
 
 #### 🎯 **Benefits**
@@ -116,12 +116,9 @@ First stable release of PivotPHP Cycle ORM integration, providing robust databas
 - Best practices and examples
 
 #### CLI Commands
-```bash
-php vendor/bin/pivotphp cycle:entity User       # Create entity
-php vendor/bin/pivotphp cycle:migrate          # Run migrations
-php vendor/bin/pivotphp cycle:schema           # Update schema
-php vendor/bin/pivotphp cycle:status           # Check status
-```
+`Commands\EntityCommand`, `MigrateCommand`, `SchemaCommand`, `StatusCommand` — plain
+PHP classes (`handle(): int`), not a bundled binary. See README.md's "Custom Commands"
+section for the real invocation pattern (no `vendor/bin/pivotphp` is shipped).
 
 #### Basic Usage
 ```php
@@ -129,12 +126,12 @@ use PivotPHP\Core\Core\Application;
 use PivotPHP\CycleORM\CycleServiceProvider;
 
 $app = new Application();
-$app->register(new CycleServiceProvider());
+$app->register(new CycleServiceProvider($app));
 
 // Use in routes
-$app->get('/users', function (CycleRequest $request) {
-    $users = $request->getRepository(User::class)->findAll();
-    return $request->response()->json($users);
+$app->get('/users', function (CycleRequest $request, $res) {
+    $users = $request->repository(User::class)->findAll();
+    return $res->json($users);
 });
 ```
 
@@ -167,7 +164,7 @@ For questions, issues, or contributions:
 
 ---
 
-**Current Version**: v1.0.0  
-**Release Date**: July 7, 2025  
-**Stability**: Stable  
-**Framework Requirement**: PivotPHP Core v1.0.0+
+**Current Version**: v1.0.1
+**Release Date**: July 9, 2025
+**Stability**: Stable
+**Framework Requirement**: PivotPHP Core ^1.1.0 (see composer.json)

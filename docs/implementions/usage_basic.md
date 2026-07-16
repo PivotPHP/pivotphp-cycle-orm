@@ -6,7 +6,7 @@ Este guia mostra como integrar o Cycle ORM ao seu projeto PivotPHP de forma simp
 
 1. Instale o pacote via Composer:
 ```bash
-composer require pivotphp/core-cycle-orm-extension
+composer require pivotphp/cycle-orm
 ```
 
 2. Publique as configurações (opcional):
