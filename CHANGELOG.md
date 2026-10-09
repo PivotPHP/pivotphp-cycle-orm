@@ -145,15 +145,6 @@ This initial release provides a complete Cycle ORM integration for PivotPHP Fram
 4. **Developer Experience**: Rich CLI tools and debugging capabilities
 5. **Testing**: Comprehensive test coverage and factories
 
-### 🔄 Future Roadmap
-
-Future releases will focus on:
-- Additional database drivers
-- Enhanced performance optimizations
-- Advanced caching strategies
-- Extended CLI tooling
-- Community-requested features
-
 ### 📞 Support
 
 For questions, issues, or contributions:
