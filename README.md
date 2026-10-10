@@ -1,13 +1,12 @@
 # PivotPHP Cycle ORM
 
-> ⚠️ **Archived (2026-10-10).** This package targets **PivotPHP Core 1.x** and uses HTTP APIs that
-> were **removed in Core 4.0** (`PivotPHP\Core\Http\Request`/`Response`). It is **archived
-> (read-only)** and is **not** compatible with the current core (4.x). The migration to Core 4.0 is
-> tracked as future work ([SPEC-103](https://github.com/PivotPHP/pivotphp-specs/blob/main/SPECS/SPEC-103-archive-cycle-orm.md));
-> the repository will be reopened when that work is prioritized.
->
-> → Use [`PivotPHP/pivotphp-core`](https://github.com/PivotPHP/pivotphp-core) 4.x with a database
-> layer of your choice in the meantime.
+> ℹ️ **Paused (2026-10-10).** This package targets **PivotPHP Core 1.x** and has not been migrated
+> to Core 4.x yet (it uses `PivotPHP\Core\Http\Request`/`Response`, removed in 4.0). It is **not
+> abandoned** — the migration to Core 4.0 is tracked in
+> [SPEC-103](https://github.com/PivotPHP/pivotphp-specs/blob/main/SPECS/SPEC-103-archive-cycle-orm.md)
+> and the repository will be updated when that work is prioritized. Until then, use
+> [`PivotPHP/pivotphp-core`](https://github.com/PivotPHP/pivotphp-core) 4.x with a database layer of
+> your choice.
 
 <div align="center">
 
